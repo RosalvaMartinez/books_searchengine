@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client';
 import React, { useState, useEffect } from 'react';
 import {
   Container,
@@ -9,15 +10,18 @@ import {
 
 import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
+
 import { removeBookId } from '../utils/localStorage';
+//import new REMOVE_BOOK
+import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
   const [userData, setUserData] = useState({});
 
   // use this to determine if `useEffect()` hook needs to run again
   const userDataLength = Object.keys(userData).length;
-
-  useEffect(() => {
+  // const userData= useQuery(QUERY_TECH);
+  useQuery(() => {
     const getUserData = async () => {
       try {
         const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -73,7 +77,7 @@ const SavedBooks = () => {
 
   return (
     <>
-      <div fluid className="text-light bg-dark p-5">
+      <div fluid className='text-light bg-dark p-5'>
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>

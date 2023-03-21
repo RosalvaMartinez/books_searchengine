@@ -9,14 +9,12 @@ import {
 } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
-import { searchGoogleBooks } from '../utils/API';
+import { saveBook, searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
-
+//import SAVE_BOOK
 import { SAVE_BOOK } from '../utils/mutations';
-import { GET_ME } from '../utils/queries'
 //import apollo useMutation hook
 import { useMutation } from '@apollo/client';
-
 const SearchBooks = () => {
   // create state for holding returned google api data
   const [searchedBooks, setSearchedBooks] = useState([]);
@@ -25,9 +23,6 @@ const SearchBooks = () => {
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
-
-  const [saveBook, { error }] = useMutation(SAVE_BOOK);
-
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
@@ -79,27 +74,33 @@ const SearchBooks = () => {
       return false;
     }
 
-    try {
-      await saveBook({
-        variables: {book: bookToSave},
-        update: cache => {
-          const {me} = cache.readQuery({query: GET_ME})
-          cache.writeQuery({query: GET_ME, data: {me: { ...me, saveBooks: [...me.savedBooks, bookToSave]}}})
-        }
-      })
-      // if book successfully saves to user's account, save book id to state
-      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-    } catch (err) {
-      console.error(err);
-    }
+
+
+    const HandleBook = async (input) => {
+      const [saveBook, { error }] = useMutation(SAVE_BOOK);
+      try {
+        await saveBook({
+          variables: { input: input },
+
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+
+    // if book successfully saves to user's account, save book id to state
+    setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+
   };
 
   return (
     <>
-      <div className="text-light bg-dark p-5">
+      <div fluid className='text-light bg-dark pt-5'>
         <Container>
           <h1>Search for Books!</h1>
           <Form onSubmit={handleFormSubmit}>
+            <Form>
               <Col xs={12} md={8}>
                 <Form.Control
                   name='searchInput'
@@ -115,12 +116,13 @@ const SearchBooks = () => {
                   Submit Search
                 </Button>
               </Col>
+            </Form>
           </Form>
         </Container>
       </div>
 
       <Container>
-        <h2 className='pt-5'>
+        <h2>
           {searchedBooks.length
             ? `Viewing ${searchedBooks.length} results:`
             : 'Search for a book to begin'}
