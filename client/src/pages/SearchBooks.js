@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
-import { saveBook, searchGoogleBooks } from '../utils/API';
+import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 //import SAVE_BOOK
 import { SAVE_BOOK } from '../utils/mutations';
@@ -23,6 +23,9 @@ const SearchBooks = () => {
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
+
+  const [saveBook, { error }] = useMutation(SAVE_BOOK);
+
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
@@ -77,7 +80,7 @@ const SearchBooks = () => {
 
 
     const HandleBook = async (input) => {
-      const [saveBook, { error }] = useMutation(SAVE_BOOK);
+      //const [saveBook, { error }] = useMutation(SAVE_BOOK);
       try {
         await saveBook({
           variables: { input: input },
@@ -96,11 +99,11 @@ const SearchBooks = () => {
 
   return (
     <>
-      <div fluid className='text-light bg-dark pt-5'>
+      <div className='text-light bg-dark pt-5'>
         <Container>
           <h1>Search for Books!</h1>
           <Form onSubmit={handleFormSubmit}>
-            <Form>
+            <Row>
               <Col xs={12} md={8}>
                 <Form.Control
                   name='searchInput'
@@ -116,7 +119,7 @@ const SearchBooks = () => {
                   Submit Search
                 </Button>
               </Col>
-            </Form>
+            </Row>
           </Form>
         </Container>
       </div>
@@ -130,8 +133,8 @@ const SearchBooks = () => {
         <Row>
           {searchedBooks.map((book) => {
             return (
-              <Col md="4">
-                <Card key={book.bookId} border='dark'>
+              <Col key={book.bookId} md="4">
+                <Card border='dark'>
                   {book.image ? (
                     <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' />
                   ) : null}
