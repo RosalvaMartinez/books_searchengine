@@ -12,6 +12,7 @@ const bookSchema = new Schema({
     required: true,
   },
   // saved book id from GoogleBooks
+  //comment to redeploy to heroku
   bookId: {
     type: String,
     required: true,
