@@ -79,17 +79,17 @@ const SearchBooks = () => {
 
 
 
-    const HandleBook = async (input) => {
+    // const handleBook = async (input) => {
       //const [saveBook, { error }] = useMutation(SAVE_BOOK);
       try {
         await saveBook({
-          variables: { input: input },
+          variables: { input: bookToSave },
 
         });
       } catch (err) {
         console.error(err);
-      }
-    };
+      };
+    
 
 
     // if book successfully saves to user's account, save book id to state
